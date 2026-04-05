@@ -10,15 +10,14 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build
+  phpstan:
+    name: PHPStan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,60 +26,28 @@ jobs:
           persist-credentials: false
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image name
-        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
       - name: Build Docker images
         uses: docker/bake-action@v7
-        env:
-          IMAGES_PREFIX: ${{ env.IMAGE_NAME }}/
         with:
-          push: true
+          pull: true
+          load: true
           source: .
           files: |
             compose.yaml
             compose.override.yaml
-          tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-  phpstan:
-    name: PHPStan
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image name
-        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
-      - name: Pull Docker images
-        run: |
-          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
+          set: |
+            *.cache-from=type=gha,scope=${{github.ref}}
+            *.cache-from=type=gha,scope=refs/heads/main
+            *.cache-to=type=gha,scope=${{github.ref}},mode=max
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
-        run: sleep 10
+        run: sleep 15
       - name: Run PHPStan
         run: docker compose exec -T php php vendor/bin/phpstan analyse --memory-limit=512M
 
   phpcsfixer:
     name: PHP-CS-Fixer
-    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -89,23 +56,23 @@ jobs:
           persist-credentials: false
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Build Docker images
+        uses: docker/bake-action@v7
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image name
-        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
-      - name: Pull Docker images
-        run: |
-          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
+          pull: true
+          load: true
+          source: .
+          files: |
+            compose.yaml
+            compose.override.yaml
+          set: |
+            *.cache-from=type=gha,scope=${{github.ref}}
+            *.cache-from=type=gha,scope=refs/heads/main
+            *.cache-to=type=gha,scope=${{github.ref}},mode=max
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
-        run: sleep 10
+        run: sleep 15
       - name: Run PHP-CS-Fixer
         run: docker compose exec -T php php vendor/bin/php-cs-fixer fix --dry-run --diff
 
@@ -120,23 +87,23 @@ jobs:
           persist-credentials: false
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Build Docker images
+        uses: docker/bake-action@v7
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image name
-        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
-      - name: Pull Docker images
-        run: |
-          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
+          pull: true
+          load: true
+          source: .
+          files: |
+            compose.yaml
+            compose.override.yaml
+          set: |
+            *.cache-from=type=gha,scope=${{github.ref}}
+            *.cache-from=type=gha,scope=refs/heads/main
+            *.cache-to=type=gha,scope=${{github.ref}},mode=max
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
-        run: sleep 10
+        run: sleep 15
       - name: Check Security Advisories
         run: docker compose exec -T php composer update --dry-run roave/security-advisories
 
@@ -151,23 +118,23 @@ jobs:
           persist-credentials: false
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Build Docker images
+        uses: docker/bake-action@v7
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image name
-        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
-      - name: Pull Docker images
-        run: |
-          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
+          pull: true
+          load: true
+          source: .
+          files: |
+            compose.yaml
+            compose.override.yaml
+          set: |
+            *.cache-from=type=gha,scope=${{github.ref}}
+            *.cache-from=type=gha,scope=refs/heads/main
+            *.cache-to=type=gha,scope=${{github.ref}},mode=max
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
-        run: sleep 10
+        run: sleep 15
       - name: Check HTTP reachability
         run: curl -v --fail-with-body http://localhost
       - name: Check Mercure reachability
