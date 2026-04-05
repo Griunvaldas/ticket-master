@@ -42,6 +42,8 @@ jobs:
             compose.yaml
             compose.override.yaml
           tags: ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
+          env:
+            IMAGES_PREFIX: ghcr.io/${{ env.GITHUB_REPOSITORY }}/
           set: |
             *.cache-from=type=gha,scope=${{github.ref}}
             *.cache-from=type=gha,scope=refs/heads/main
@@ -67,6 +69,7 @@ jobs:
       - name: Pull Docker images
         run: |
           docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
+          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
           docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
@@ -95,6 +98,7 @@ jobs:
       - name: Pull Docker images
         run: |
           docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
+          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
           docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
@@ -123,6 +127,7 @@ jobs:
       - name: Pull Docker images
         run: |
           docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
+          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
           docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
@@ -151,6 +156,7 @@ jobs:
       - name: Pull Docker images
         run: |
           docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
+          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
           docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
