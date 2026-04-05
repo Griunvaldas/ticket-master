@@ -40,6 +40,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker images
         uses: docker/bake-action@v7
+        env:
+          IMAGES_PREFIX: ${{ env.IMAGE_NAME }}/
         with:
           push: true
           source: .
