@@ -1,0 +1,25 @@
+parameters:
+    level: 8
+    paths:
+        - bin/
+        - config/
+        - public/
+        - src/
+    excludePaths:
+        - tests/bootstrap.php
+    ignoreErrors:
+        -
+            message: '#Class App\\Admin\\.* extends generic class Sonata\\AdminBundle\\Admin\\AbstractAdmin but does not specify its types: T#'
+            path: src/Admin/*
+        -
+            message: '#Class App\\State\\Provider\\EventItemProvider implements generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types: T#'
+            path: src/State/Provider/EventItemProvider.php
+        -
+            message: '#Property .*::\$id \(int\|null\) is never assigned int so it can be removed from the property type\.#'
+            path: src/Entity/*
+        -
+            message: '#Property App\\Exception\\Event\\EventNotFoundException::\$resourceClass is never read, only written\.#'
+            path: src/Exception/Event/EventNotFoundException.php
+        -
+            message: '#Property App\\Exception\\Event\\EventNotFoundException::\$identifier is never read, only written\.#'
+            path: src/Exception/Event/EventNotFoundException.php
