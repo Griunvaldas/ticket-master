@@ -18,6 +18,7 @@ concurrency:
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/app-php-dev
+  REGISTRY: ghcr.io/${{ github.repository_owner }}/
 
 jobs:
   build:
@@ -41,7 +42,7 @@ jobs:
       - name: Build Docker images
         uses: docker/bake-action@v7
         env:
-          IMAGES_PREFIX: ${{ env.IMAGE_NAME }}/
+          IMAGES_PREFIX: ${{ env.REGISTRY }}
         with:
           push: true
           source: .
