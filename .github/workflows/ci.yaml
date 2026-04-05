@@ -35,6 +35,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker images
         uses: docker/bake-action@v7
+        env:
+          IMAGES_PREFIX: ghcr.io/${{ env.GITHUB_REPOSITORY }}/
         with:
           push: true
           source: .
@@ -42,12 +44,6 @@ jobs:
             compose.yaml
             compose.override.yaml
           tags: ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
-          env:
-            IMAGES_PREFIX: ghcr.io/${{ env.GITHUB_REPOSITORY }}/
-          set: |
-            *.cache-from=type=gha,scope=${{github.ref}}
-            *.cache-from=type=gha,scope=refs/heads/main
-            *.cache-to=type=gha,scope=${{github.ref}},mode=max
 
   phpstan:
     name: PHPStan
