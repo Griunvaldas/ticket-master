@@ -80,7 +80,6 @@ RUN <<-EOF
 	useradd -m -s /bin/bash nonroot
 	echo "nonroot ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/nonroot
 	git config --system --add safe.directory /app
-	curl -fsSL https://opencode.ai/install | bash
 EOF
 
 COPY --link frankenphp/conf.d/20-app.dev.ini $PHP_INI_DIR/app.conf.d/
