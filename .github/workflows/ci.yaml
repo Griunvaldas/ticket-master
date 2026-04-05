@@ -33,17 +33,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image name
+        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
       - name: Build Docker images
         uses: docker/bake-action@v7
         env:
-          IMAGES_PREFIX: ghcr.io/${{ env.GITHUB_REPOSITORY }}/
+          IMAGES_PREFIX: ${{ env.IMAGE_NAME }}/
         with:
           push: true
           source: .
           files: |
             compose.yaml
             compose.override.yaml
-          tags: ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
+          tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
   phpstan:
     name: PHPStan
@@ -62,11 +64,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image name
+        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
       - name: Pull Docker images
         run: |
-          docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
+          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
@@ -91,11 +95,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image name
+        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
       - name: Pull Docker images
         run: |
-          docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
+          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
@@ -120,11 +126,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image name
+        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
       - name: Pull Docker images
         run: |
-          docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
+          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
@@ -149,11 +157,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image name
+        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')/app-php-dev" >> $GITHUB_ENV
       - name: Pull Docker images
         run: |
-          docker pull ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }}
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev
-          docker tag ghcr.io/${{ env.GITHUB_REPOSITORY }}/app-php-dev:${{ github.sha }} app-php-dev
+          docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.IMAGE_NAME }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ github.sha }} app-php-dev
       - name: Start services
         run: docker compose up --no-build
       - name: Wait for services
