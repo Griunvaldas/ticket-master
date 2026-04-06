@@ -15,6 +15,9 @@ parameters:
             message: '#Class App\\State\\Provider\\EventItemProvider implements generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types: T#'
             path: src/State/Provider/EventItemProvider.php
         -
+            message: '#Class App\\State\\Processor\\.* implements generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types: T#'
+            path: src/State/Processor/*
+        -
             message: '#Property .*::\$id \(int\|null\) is never assigned int so it can be removed from the property type\.#'
             path: src/Entity/*
         -
